@@ -1,0 +1,27 @@
+{% if first_time_accessed %}
+<script>                               
+window.dataLayer = window.dataLayer || [];                                            
+var shipping_price = '{{shipping_price | money_without_currency }}';
+shipping_price  = shipping_price.replace(",", ".");
+var total_price = '{{total_price | money_without_currency }}';
+total_price  = total_price.replace(",", ".");
+var tax_price = '{{tax_price | money_without_currency }}';
+tax_price  = tax_price.replace(",", ".");
+window.dataLayer.push({
+'transactionTotal': total_price,
+'transactionShipping': shipping_price,
+'transactionTax': tax_price,
+'transactionId': "{{ order_number }}",
+'transactionProducts': [
+{% for line_item in line_items %}
+{
+'sku': '{{ line_item.sku }}',
+'name' : '{{ line_item.title }}',
+'price': {{ line_item.line_price | divided_by: 100}},
+'quantity':{{ line_item.quantity }}
+},
+{% endfor %}
+]
+});
+</script> 
+{% endif %}
